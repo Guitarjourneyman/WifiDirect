@@ -18,32 +18,32 @@ public class WifiDirect extends JFrame{
     private JTextField inputIp;
     
     public WifiDirect() {
-        // GUI ±âº» ¼³Á¤
+        // GUI ê¸°ë³¸ ì„¤ì •
         setTitle("Wifi P2P");
         setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // ¸Þ½ÃÁö ¼ö½Å ¿µ¿ª
+        // ë©”ì‹œì§€ ìˆ˜ì‹  ì˜ì—­
         receivedMessagesArea = new JTextArea();
         receivedMessagesArea.setEditable(false);
         receivedMessagesArea.setLineWrap(true);
         receivedMessagesArea.setWrapStyleWord(true);
         JScrollPane receivedScrollPane = new JScrollPane(receivedMessagesArea);
 
-        // ¸Þ½ÃÁö Àü¼Û ¿µ¿ª
+        // ë©”ì‹œì§€ ì „ì†¡ ì˜ì—­
         sendMessageArea = new JTextArea(5, 30);
         sendMessageArea.setLineWrap(true);
         sendMessageArea.setWrapStyleWord(true);
         JScrollPane sendScrollPane = new JScrollPane(sendMessageArea);
 
-        // ¹öÆ° »ý¼º
-        sendButton = new JButton("¸Þ½ÃÁö º¸³»±â");
-        receiveButton = new JButton("¼ö½Å ´ë±â");
-        //ÆÐ³Î ÅØ½ºÆ®ÇÊµå
+        // ë²„íŠ¼ ìƒì„±
+        sendButton = new JButton("ë©”ì‹œì§€ ë³´ë‚´ê¸°");
+        receiveButton = new JButton("ìˆ˜ì‹  ëŒ€ê¸°");
+        //íŒ¨ë„ í…ìŠ¤íŠ¸í•„ë“œ
         inputIp = new JTextField(15);
         
-        // ÆÐ³Î ·¹ÀÌ¾Æ¿ô ¼³Á¤
+        // íŒ¨ë„ ë ˆì´ì•„ì›ƒ ì„¤ì •
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
         buttonPanel.add(sendButton);
@@ -51,20 +51,20 @@ public class WifiDirect extends JFrame{
         buttonPanel.add(inputIp);
 
 
-        // ¸ÞÀÎ ·¹ÀÌ¾Æ¿ô ¼³Á¤
+        // ë©”ì¸ ë ˆì´ì•„ì›ƒ ì„¤ì •
         setLayout(new BorderLayout());
         add(receivedScrollPane, BorderLayout.CENTER);
         add(sendScrollPane, BorderLayout.SOUTH);
         add(buttonPanel, BorderLayout.NORTH);
         
-        // ¹öÆ° ÀÌº¥Æ® Ã³¸®
+        // ë²„íŠ¼ ì´ë²¤íŠ¸ ì²˜ë¦¬
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sender = new SenderViewModel();
                 String serverIP = inputIp.getText();           
                 sender.startClient(serverIP);
-                receivedMessagesArea.append("¸Þ½ÃÁö°¡ Àü¼ÛµÇ¾ú½À´Ï´Ù.\n");
+                receivedMessagesArea.append("ë©”ì‹œì§€ê°€ ì „ì†¡ë˜ì—ˆìŠµë‹ˆë‹¤. To" + serverIP + "\n");
             }
         });
 
@@ -73,7 +73,7 @@ public class WifiDirect extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 receiver = new ReceiverViewModel();
                 new Thread(() -> receiver.startServer()).start();
-                receivedMessagesArea.append("¼ö½Å ´ë±â Áß...\n");
+                receivedMessagesArea.append("ìˆ˜ì‹  ëŒ€ê¸° ì¤‘...\n");
             }
         });
     }
