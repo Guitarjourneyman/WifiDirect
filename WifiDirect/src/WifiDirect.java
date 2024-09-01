@@ -11,71 +11,108 @@ public class WifiDirect extends JFrame{
 	
 	private JTextArea receivedMessagesArea;
     private JTextArea sendMessageArea;
-    private JButton sendButton;
-    private JButton receiveButton;
-    private ReceiverViewModel receiver;
-    private SenderViewModel sender;
+    private JButton sendButton_TCP;
+    private JButton sendButton_UDP;
+    private JButton receiveButton_TCP;
+    private JButton receiveButton_UDP;
+    private ReceiverViewModel receiver_tcp;
+    private ReceiverViewModelUdp receiver_udp;
+    private SenderViewModel sender_tcp;
+    private SenderViewModelUdp sender_udp;
     private JTextField inputIp;
     
     public WifiDirect() {
-        // GUI ê¸°ë³¸ ì„¤ì •
+        // GUI ±âº» ¼³Á¤
         setTitle("Wifi P2P");
-        setSize(500, 500);
+        setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // ë©”ì‹œì§€ ìˆ˜ì‹  ì˜ì—­
+        // ¸Þ½ÃÁö ¼ö½Å ¿µ¿ª
         receivedMessagesArea = new JTextArea();
         receivedMessagesArea.setEditable(false);
         receivedMessagesArea.setLineWrap(true);
         receivedMessagesArea.setWrapStyleWord(true);
         JScrollPane receivedScrollPane = new JScrollPane(receivedMessagesArea);
 
-        // ë©”ì‹œì§€ ì „ì†¡ ì˜ì—­
-        sendMessageArea = new JTextArea(5, 30);
+        // ¸Þ½ÃÁö Àü¼Û ¿µ¿ª
+        sendMessageArea = new JTextArea(5,50);
         sendMessageArea.setLineWrap(true);
         sendMessageArea.setWrapStyleWord(true);
         JScrollPane sendScrollPane = new JScrollPane(sendMessageArea);
 
-        // ë²„íŠ¼ ìƒì„±
-        sendButton = new JButton("ë©”ì‹œì§€ ë³´ë‚´ê¸°");
-        receiveButton = new JButton("ìˆ˜ì‹  ëŒ€ê¸°");
-        //íŒ¨ë„ í…ìŠ¤íŠ¸í•„ë“œ
+        // ¹öÆ° »ý¼º
+        sendButton_TCP = new JButton("TCP¸Þ½ÃÁö º¸³»±â");
+        sendButton_UDP = new JButton("UDP¸Þ½ÃÁö º¸³»±â");
+        receiveButton_TCP = new JButton("TCP¼ö½Å ´ë±â");
+        receiveButton_UDP = new JButton("UDP¼ö½Å ´ë±â");
+        //ÆÐ³Î ÅØ½ºÆ®ÇÊµå
         inputIp = new JTextField(15);
         
-        // íŒ¨ë„ ë ˆì´ì•„ì›ƒ ì„¤ì •
+        // ÆÐ³Î ·¹ÀÌ¾Æ¿ô ¼³Á¤
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
-        buttonPanel.add(sendButton);
-        buttonPanel.add(receiveButton);
+        buttonPanel.add(sendButton_TCP);
+        buttonPanel.add(receiveButton_TCP);
+        buttonPanel.add(sendButton_UDP);
+        buttonPanel.add(receiveButton_UDP);
         buttonPanel.add(inputIp);
 
 
-        // ë©”ì¸ ë ˆì´ì•„ì›ƒ ì„¤ì •
+        // ¸ÞÀÎ ·¹ÀÌ¾Æ¿ô ¼³Á¤
         setLayout(new BorderLayout());
         add(receivedScrollPane, BorderLayout.CENTER);
         add(sendScrollPane, BorderLayout.SOUTH);
         add(buttonPanel, BorderLayout.NORTH);
         
-        // ë²„íŠ¼ ì´ë²¤íŠ¸ ì²˜ë¦¬
-        sendButton.addActionListener(new ActionListener() {
+        // ¹öÆ° ÀÌº¥Æ® Ã³¸®
+        sendButton_TCP.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sender = new SenderViewModel();
+                sender_tcp = new SenderViewModel();
                 String serverIP = inputIp.getText();           
-                sender.startClient(serverIP);
-                receivedMessagesArea.append("ë©”ì‹œì§€ê°€ ì „ì†¡ë˜ì—ˆìŠµë‹ˆë‹¤. To" + serverIP + "\n");
+                sender_tcp.startClient(serverIP);
+                receivedMessagesArea.append("TCP·Î ¸Þ½ÃÁö°¡ Àü¼ÛµÇ¾ú½À´Ï´Ù.\n");
+                //¿¡ÄÚ¸Þ½ÃÁö¸¦ ¼ö½ÅÇÏ±â À§ÇØ receiverµµ µ¿ÀÛÇÏµµ·Ï ¼öÁ¤
+                receiver_tcp = new ReceiverViewModel();
+                new Thread(() -> receiver_tcp.startServer()).start();
+                receivedMessagesArea.append("TCP ¼ö½Å ´ë±â Áß...\n");
+                
             }
         });
 
-        receiveButton.addActionListener(new ActionListener() {
+        receiveButton_TCP.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                receiver = new ReceiverViewModel();
-                new Thread(() -> receiver.startServer()).start();
-                receivedMessagesArea.append("ìˆ˜ì‹  ëŒ€ê¸° ì¤‘...\n");
+                receiver_tcp = new ReceiverViewModel();
+                new Thread(() -> receiver_tcp.startServer()).start();
+                receivedMessagesArea.append("TCP ¼ö½Å ´ë±â Áß...\n");
             }
         });
+        
+        sendButton_UDP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sender_udp = new SenderViewModelUdp();
+                String serverIP = inputIp.getText();           
+                sender_udp.startClient(serverIP);
+                receivedMessagesArea.append("UDP·Î ¸Þ½ÃÁö°¡ Àü¼ÛµÇ¾ú½À´Ï´Ù.\n");
+              //¿¡ÄÚ¸Þ½ÃÁö¸¦ ¼ö½ÅÇÏ±â À§ÇØ receiverµµ µ¿ÀÛÇÏµµ·Ï ¼öÁ¤
+                receiver_udp = new ReceiverViewModelUdp();
+                new Thread(() -> receiver_udp.startServer()).start();
+                receivedMessagesArea.append("UDP ¼ö½Å ´ë±â Áß...\n");
+            }
+        });
+
+        receiveButton_UDP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                receiver_udp = new ReceiverViewModelUdp();
+                new Thread(() -> receiver_udp.startServer()).start();
+                receivedMessagesArea.append("UDP ¼ö½Å ´ë±â Áß...\n");
+            }
+        });
+        
     }
 
 
