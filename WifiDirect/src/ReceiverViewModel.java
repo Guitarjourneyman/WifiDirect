@@ -24,7 +24,7 @@ public class ReceiverViewModel {
 
             String clientIP = socket.getInetAddress().getHostAddress();
             String hostIP = InetAddress.getLocalHost().getHostAddress();
-            while (true) {
+            
                 try {
                     Object receivedObject = in.readObject();
                     if (receivedObject instanceof String) {
@@ -37,24 +37,23 @@ public class ReceiverViewModel {
                         String timeStamp = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
                         
                         System.out.println("수신된 메시지 from " + clientIP + ": " + truncatedMessage + " [" + timeStamp + "]" );
-                        System.out.println("Step 1");
-                        out.writeObject("에코 메시지 from " + hostIP + ": " + truncatedMessage + " bytes received");
-                        System.out.println("Step 2");
-                        out.flush();
-                        System.out.println("Step 3");
-                        break;
+                        // 클라이언트로 수신 확인 메시지 전송
+                        String acknowledgmentMessage = "Window에서 메시지를 받았습니다.";
+                        out.writeObject(acknowledgmentMessage); // 메시지를 직렬화하여 클라이언트로 송신
+                        out.flush(); // 메시지를 즉시 전송
+                        
                     }
                 } catch (EOFException e) {
                     System.out.println("클라이언트 연결이 종료되었습니다.");
-                    break;
+                   
                 } catch (SocketException e) {
                     System.out.println("연결이 리셋되었습니다: " + e.getMessage());
-                    break;
+                   
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
-                    break;
+                   
                 }
-            }
+            
 
         } catch (BindException e) {
             System.out.println("포트가 이미 사용 중입니다: " + e.getMessage());

@@ -14,9 +14,9 @@ public class SenderViewModelUdp {
             InetAddress serverAddress = InetAddress.getByName(serverIP);
             System.out.println("서버에 연결되었습니다.");
 
-            // 60KB의 연속된 "A" 문자 생성
-            StringBuilder messageBuilder = new StringBuilder(61440);
-            for (int i = 0; i < 61440; i++) {
+            // 60KB의 연속된 "A" 문자 생성 , 임의로 30 bytes 설정
+            StringBuilder messageBuilder = new StringBuilder(30);
+            for (int i = 0; i < 30; i++) {
                 messageBuilder.append('A');
             }
             String message = messageBuilder.toString();

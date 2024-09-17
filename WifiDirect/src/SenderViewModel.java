@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class SenderViewModel {
@@ -23,10 +25,13 @@ public class SenderViewModel {
             for (int i = 0; i < 61440; i++) {
                 messageBuilder.append('A');
             }
+         // 현재 시간을 hh:mm:ss.SSS 형식으로 가져오기
+            String timeStamp = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
+            
             String message = messageBuilder.toString();
             
-            // 메시지 전송
-            out.println(message);
+            // 메시지 전송 + 타임스탬프 추가
+            out.println("From Window "+"["+timeStamp+"]"+message);
             System.out.println("60KB의 연속된 'A' 메시지를 서버로 전송했습니다.");
             
         } catch (IOException e) {

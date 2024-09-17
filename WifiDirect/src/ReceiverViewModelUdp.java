@@ -16,7 +16,7 @@ public class ReceiverViewModelUdp {
             socket = new DatagramSocket(PORT);
             System.out.println("UDP 서버가 " + PORT + " 포트에서 시작되었습니다. 메시지 대기 중...");
 
-            while (true) {
+            
                 try {
                     // 버퍼 생성
                     byte[] buffer = new byte[BUFFER_SIZE];
@@ -45,17 +45,26 @@ public class ReceiverViewModelUdp {
 
                     // 메시지 출력  // 시간을 메시지 끝에 추가
                     System.out.println("수신된 메시지 from " + clientIP + ": " + truncatedMessage + " [" + timeStamp + "]" );
+                    // 수신 확인 메시지 생성
+                    String acknowledgmentMessage = "Window에서 메시지를 받았습니다 [" + timeStamp + "]";
+                    byte[] acknowledgmentBytes = acknowledgmentMessage.getBytes();
+                    // 수신 확인 메시지 송신
+                    DatagramPacket acknowledgmentPacket = new DatagramPacket(acknowledgmentBytes, acknowledgmentBytes.length, InetAddress.getByName(clientIP), PORT);
+                    socket.send(acknowledgmentPacket);
 
+                    System.out.println("수신 확인 메시지를 송신했습니다: ");
+                    
+                    /* while문 제거로 if문 삭제
                     // 종료 조건을 위해 특정 메시지를 수신하면 서버를 종료
                     if ("exit".equalsIgnoreCase(receivedMessage.trim())) {
                         System.out.println("서버 종료 명령을 수신했습니다. 서버를 종료합니다.");
                         break;
                     }
-
+					*/
                 } catch (Exception e) {
                     System.out.println("데이터 수신 중 오류 발생: " + e.getMessage());
                 }
-            }
+            
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
